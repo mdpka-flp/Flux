@@ -9,9 +9,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Flux.ViewModels;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 public partial class MainViewModel : ViewModelBase
 {
     private static readonly string[] AudioExtensions =
@@ -24,6 +27,8 @@ public partial class MainViewModel : ViewModelBase
     private List<string> _playlist = new();
     private int _currentIndex = -1;
     private bool _suppressSeek;
+
+    private string? _currentOriginalArtPath;
 
     [ObservableProperty] private string _trackTitle = "Ничего не выбрано";
     [ObservableProperty] private string _trackArtist = "Unknown";
@@ -45,7 +50,8 @@ public partial class MainViewModel : ViewModelBase
 
         _audioPlayerService.PlaybackEnded += OnPlaybackEnded;
 
-        // Загружаем сохранённую громкость
+        MprisService.Start();
+
         var settings = SettingsService.Load();
         Volume = settings.Volume;
         _audioPlayerService.SetVolume(Volume);
@@ -61,6 +67,8 @@ public partial class MainViewModel : ViewModelBase
         _suppressSeek = true;
         Position = 100;
         _suppressSeek = false;
+
+        MprisService.RegisterStatus("Stopped"); 
     }
 
     private void UpdatePositionFromPlayer()
@@ -154,11 +162,15 @@ public partial class MainViewModel : ViewModelBase
         {
             _audioPlayerService.Pause();
             IsPlaying = false;
+
+            MprisService.RegisterStatus("Paused"); 
         }
         else
         {
             _audioPlayerService.Resume();
             IsPlaying = true;
+
+            MprisService.RegisterStatus("Playing"); 
         }
     }
 
@@ -172,6 +184,8 @@ public partial class MainViewModel : ViewModelBase
         Position = 0;
         CurrentTimeText = "00:00";
         _suppressSeek = false;
+
+        MprisService.RegisterStatus("Stopped"); 
     }
 
     [RelayCommand]
@@ -227,11 +241,16 @@ public partial class MainViewModel : ViewModelBase
         TrackInfo = $"{ext} • {rate} Hz • {channels} ch{bitratePart}";
 
         LoadAlbumArt();
+
+        MprisService.UpdateMetadata(TrackTitle, TrackArtist, _audioPlayerService.GetAlbumArtPath() ?? "");
+        MprisService.RegisterStatus("Playing");
     }
 
     private void LoadAlbumArt()
     {
         var path = _audioPlayerService.GetAlbumArtPath();
+        _currentOriginalArtPath = path;
+
         if (string.IsNullOrEmpty(path) || !File.Exists(path))
         {
             AlbumArt = null;
@@ -240,13 +259,33 @@ public partial class MainViewModel : ViewModelBase
 
         try
         {
-            // Важно: кэшируем старый Bitmap, чтобы не утекала память
             AlbumArt?.Dispose();
-            AlbumArt = new Bitmap(path);
+            using var stream = File.OpenRead(path);
+            AlbumArt = Bitmap.DecodeToWidth(stream, 120); 
         }
         catch
         {
             AlbumArt = null;
         }
     }
+
+    [RelayCommand]
+    private void OpenOriginalArt()
+    {
+        if (string.IsNullOrEmpty(_currentOriginalArtPath) || !File.Exists(_currentOriginalArtPath)) 
+            return;
+
+        try
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = OperatingSystem.IsWindows() ? "explorer.exe" : "xdg-open",
+                Arguments = $"\"{_currentOriginalArtPath}\"",
+                UseShellExecute = true
+            };
+            Process.Start(startInfo);
+        }
+        catch { }
+    }
+
 }

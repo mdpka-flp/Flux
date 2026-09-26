@@ -1,12 +1,19 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Flux.Services;
 
 public class AppSettings
 {
     public int Volume { get; set; } = 80;
+}
+
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(AppSettings))]
+internal partial class SourceGenerationContext : JsonSerializerContext
+{
 }
 
 public static class SettingsService
@@ -30,7 +37,8 @@ public static class SettingsService
         {
             if (!File.Exists(SettingsPath)) return new AppSettings();
             var json = File.ReadAllText(SettingsPath);
-            return JsonSerializer.Deserialize<AppSettings>(json) ?? new AppSettings();
+        
+            return JsonSerializer.Deserialize(json, SourceGenerationContext.Default.AppSettings) ?? new AppSettings();
         }
         catch
         {
@@ -42,15 +50,13 @@ public static class SettingsService
     {
         try
         {
-            var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
+            var json = JsonSerializer.Serialize(settings, SourceGenerationContext.Default.AppSettings);
             File.WriteAllText(SettingsPath, json);
         }
         catch
         {
-            
+        
         }
     }
+
 }

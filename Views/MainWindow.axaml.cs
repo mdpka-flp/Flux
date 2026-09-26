@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Flux.ViewModels;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -50,5 +51,48 @@ public partial class MainWindow : Window
 
         if (DataContext is MainViewModel vm)
             vm.PlayFileCommand.Execute(path);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            base.OnKeyDown(e);
+            return;
+        }
+
+        bool isCtrl = (e.KeyModifiers & KeyModifiers.Control) != 0;
+
+        switch (e.Key)
+        {
+            case Key.Space:
+                vm.PlayPauseCommand.Execute(null);
+                e.Handled = true;
+                break;
+
+            case Key.Up:
+                vm.Volume = Math.Min(100, vm.Volume + 5);
+               e.Handled = true;
+                break;
+
+            case Key.Down:
+                vm.Volume = Math.Max(0, vm.Volume - 5);
+                e.Handled = true;
+                break;
+
+            case Key.Left:
+                if (isCtrl) vm.PreviousCommand.Execute(null); // Ctrl + Left = Назад
+                else vm.RewindCommand.Execute(null);          // Left = Перемотка -5с
+                e.Handled = true;
+                break;
+
+            case Key.Right:
+                if (isCtrl) vm.NextCommand.Execute(null);     // Ctrl + Right = Вперед
+                else vm.ForwardCommand.Execute(null);         // Right = Перемотка +5с
+                e.Handled = true;
+                break;
+        }
+
+        base.OnKeyDown(e);
     }
 }

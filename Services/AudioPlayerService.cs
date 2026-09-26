@@ -36,7 +36,6 @@ public class AudioPlayerService : IAudioPlayerService
         _mediaPlayer.Stop();
         _currentMedia?.Dispose();
 
-        // Кроссплатформенное создание Media — работает и на Windows, и на Linux
         _currentMedia = new Media(_libVlc, filePath, FromType.FromPath);
 
         try
@@ -108,11 +107,17 @@ public class AudioPlayerService : IAudioPlayerService
     {
         using var file = OpenTagFile();
         if (file == null) return null;
+    
         var performers = file.Tag.Performers;
-        return performers is { Length: > 0 } && !string.IsNullOrWhiteSpace(performers[0])
-            ? performers[0]
-            : null;
+        if (performers is { Length: > 0 })
+        {
+            // Объединяем всех артистов из массива через запятую
+            var allArtists = string.Join(", ", performers);
+            return string.IsNullOrWhiteSpace(allArtists) ? null : allArtists;
+        }
+        return null;
     }
+
 
     public string? GetExtension()
     {

@@ -3,11 +3,12 @@
         xmlns:vm="using:Flux.ViewModels"
         x:Class="Flux.Views.MainWindow"
         x:DataType="vm:MainViewModel"
-        x:CompileBindings="False"
+        x:CompileBindings="True"
         Title="Flux Player"
         Width="700" Height="400"
         MinWidth="600" MinHeight="350"
         DragDrop.AllowDrop="True"
+        TransparencyLevelHint="Mica"
         Background="#1E1E1E">
 
     <Grid RowDefinitions="Auto,*,Auto">
@@ -17,14 +18,19 @@
             <Border Grid.Column="0" Width="120" Height="120"
                     Background="#2D2D2D" CornerRadius="8"
                     ClipToBounds="True" Margin="0,0,15,0">
-                <Grid>
-                    <Image Source="{Binding AlbumArt}" 
-                        Stretch="UniformToFill"
-                        IsVisible="{Binding AlbumArt, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                    <TextBlock Text="♪" FontSize="48" Foreground="#555"
-                            HorizontalAlignment="Center" VerticalAlignment="Center"
-                            IsVisible="{Binding AlbumArt, Converter={x:Static ObjectConverters.IsNull}}"/>
-                </Grid>
+
+                <Button Command="{Binding OpenOriginalArtCommand}"
+                        Background="Transparent" BorderThickness="0" Padding="0"
+                        Width="120" Height="120" Focusable="False">
+                    <Grid>
+                        <Image Source="{Binding AlbumArt}" 
+                                Stretch="UniformToFill"
+                                IsVisible="{Binding AlbumArt, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        <TextBlock Text="♪" FontSize="48" Foreground="#555"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                IsVisible="{Binding AlbumArt, Converter={x:Static ObjectConverters.IsNull}}"/>
+                    </Grid>
+                </Button>
             </Border>
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5">
                 <TextBlock Text="{Binding TrackTitle}" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/>
@@ -34,8 +40,8 @@
 
             <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8" Margin="20,0,15,0" Width="40">
                 <TextBlock Text="🔊" FontSize="18" HorizontalAlignment="Center"/>
-                <Slider Value="{Binding Volume}" Minimum="0" Maximum="100"
-                        Orientation="Vertical" Height="120" HorizontalAlignment="Center"/>
+                <Slider Value="{CompiledBinding Volume}" Minimum="0" Maximum="100"
+                        Orientation="Vertical" Height="120" HorizontalAlignment="Center" Focusable="False"/>
             </StackPanel>
         </Grid>
 
@@ -43,37 +49,37 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal"
                     HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
 
-            <Button Width="55" Height="55" Padding="0"
+            <Button Width="55" Height="55" Padding="0" Focusable="False"
                     Command="{Binding PreviousCommand}"
                     ToolTip.Tip="Предыдущий">
                 <TextBlock Text="⏮" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
 
-            <Button Width="55" Height="55" Padding="0"
+            <Button Width="55" Height="55" Padding="0" Focusable="False"
                     Command="{Binding RewindCommand}"
                     ToolTip.Tip="Назад 5с">
                 <TextBlock Text="⏪" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
 
-            <Button Width="55" Height="55" Padding="0"
+            <Button Width="55" Height="55" Padding="0" Focusable="False"
                     Command="{Binding StopCommand}"
                     ToolTip.Tip="Стоп">
                 <TextBlock Text="⏹" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
 
-            <Button Width="55" Height="55" Padding="0"
+            <Button Width="55" Height="55" Padding="0" Focusable="False"
                     Command="{Binding PlayPauseCommand}"
                     ToolTip.Tip="Play / Pause">
                 <TextBlock Text="⏯" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
 
-            <Button Width="55" Height="55" Padding="0"
+            <Button Width="55" Height="55" Padding="0" Focusable="False"
                     Command="{Binding ForwardCommand}"
                     ToolTip.Tip="Вперёд 5с">
                 <TextBlock Text="⏩" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
 
-            <Button Width="55" Height="55" Padding="0"
+            <Button Width="55" Height="55" Padding="0" Focusable="False"
                     Command="{Binding NextCommand}"
                     ToolTip.Tip="Следующий">
                 <TextBlock Text="⏭" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -92,7 +98,8 @@
                         Value="{Binding Position, Mode=TwoWay}"
                         VerticalAlignment="Center"
                         PointerPressed="OnTimelinePointerPressed"
-                        PointerReleased="OnTimelinePointerReleased"/>
+                        PointerReleased="OnTimelinePointerReleased"
+                        Focusable="False"/>
 
                 <TextBlock Grid.Column="2" Text="{Binding TotalTimeText}"
                            Foreground="#AAA" VerticalAlignment="Center" Margin="10,0,0,0"/>

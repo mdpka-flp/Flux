@@ -3,6 +3,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Flux.ViewModels;
 using Flux.Views;
+using System.IO;
+using System.Linq;
 
 namespace Flux;
 
@@ -17,11 +19,18 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
+            var vm = new MainViewModel();
+            var window = new MainWindow { DataContext = vm };
+            desktop.MainWindow = window;
+
+            // Если приложение запущено с аргументами (например, "Открыть с помощью"),
+            // берём первый существующий аудиофайл и запускаем его.
+            var audioFile = Program.StartupArgs.FirstOrDefault(File.Exists);
+            if (!string.IsNullOrEmpty(audioFile))
             {
-                DataContext = new MainViewModel(),
-            };
-        }
+                vm.PlayFileCommand.Execute(audioFile);
+            }
+        }   
 
         base.OnFrameworkInitializationCompleted();
     }
