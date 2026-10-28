@@ -5,11 +5,13 @@
         x:DataType="vm:MainViewModel"
         x:CompileBindings="True"
         Title="Flux Player"
-        Width="700" Height="400"
+        Width="600" Height="350"
         MinWidth="600" MinHeight="350"
+        MaxWidth="700" MaxHeight="400"
+        WindowStartupLocation="CenterScreen"
         DragDrop.AllowDrop="True"
         TransparencyLevelHint="Mica"
-        Background="#1E1E1E">
+        Background="#99111111">
 
     <Grid RowDefinitions="Auto,*,Auto">
 
