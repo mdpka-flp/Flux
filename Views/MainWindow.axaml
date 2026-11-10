@@ -1,0 +1,172 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Flux.ViewModels"
+        xmlns:views="using:Flux.Views"
+        x:Class="Flux.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        x:CompileBindings="True"
+        Title="Flux Player"
+        Width="680" Height="460"
+        MinWidth="640" MinHeight="420"
+        MaxWidth="900" MaxHeight="720"
+        WindowStartupLocation="CenterScreen"
+        Background="#99111111">
+
+    <Grid>
+        <!-- Основное окно плеера -->
+        <Grid RowDefinitions="Auto,*,Auto" IsVisible="{Binding !IsSettingsOpen}">
+
+            <!-- Верхняя часть: обложка + информация о треке + кнопка настроек -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="15">
+                <Border Grid.Column="0" Width="120" Height="120"
+                        VerticalAlignment="Top"
+                        Background="#2D2D2D" CornerRadius="8"
+                        ClipToBounds="True" Margin="0,0,15,0">
+
+                    <Button Command="{Binding OpenOriginalArtCommand}"
+                            ToolTip.Tip="{Binding Loc.TooltipOpenCover}"
+                            Background="Transparent" BorderThickness="0" Padding="0"
+                            Width="120" Height="120" Focusable="False">
+                        <Grid>
+                            <Image Source="{Binding AlbumArt}"
+                                   Stretch="UniformToFill"
+                                   IsVisible="{Binding AlbumArt, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            <TextBlock Text="♪" FontSize="48"
+                                       Foreground="{DynamicResource FluxSecondaryTextBrush}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       IsVisible="{Binding AlbumArt, Converter={x:Static ObjectConverters.IsNull}}"/>
+                        </Grid>
+                    </Button>
+                </Border>
+                
+                <!-- Информация о треке (выровнена по верхнему краю) -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Top" Spacing="5" Margin="0,5,0,0">
+                    <TextBlock Text="{Binding TrackTitle}" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding TrackArtist}" FontSize="14"
+                               Foreground="{DynamicResource FluxSecondaryTextBrush}" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding TrackInfo}" FontSize="12"
+                               Foreground="{DynamicResource FluxSecondaryTextBrush}" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Кнопка настроек в правом верхнем углу -->
+                <Button Grid.Column="2" Width="40" Height="40" Padding="0"
+                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Background="Transparent" BorderThickness="0"
+                        Focusable="False"
+                        Command="{Binding OpenSettingsCommand}"
+                        ToolTip.Tip="{Binding Loc.TooltipSettings}">
+                    <TextBlock Text="⚙" FontSize="22"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
+            </Grid>
+
+            <!-- Центральная часть: кнопки управления снизу, центр свободен для визуализатора -->
+            <Grid Grid.Row="1">
+                <!-- Кнопки управления -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                            Margin="0,0,0,8" Spacing="10">
+
+                    <Button Width="55" Height="55" Padding="0" Focusable="False"
+                            Command="{Binding PreviousCommand}"
+                            ToolTip.Tip="{Binding Loc.TooltipPrevious}">
+                        <TextBlock Text="⏮" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+
+                    <Button Width="55" Height="55" Padding="0" Focusable="False"
+                            Command="{Binding RewindCommand}"
+                            ToolTip.Tip="{Binding Loc.TooltipRewind}">
+                        <TextBlock Text="⏪" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+
+                    <Button Width="55" Height="55" Padding="0" Focusable="False"
+                            Command="{Binding StopCommand}"
+                            ToolTip.Tip="{Binding Loc.TooltipStop}">
+                        <TextBlock Text="⏹" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+
+                    <Button Width="55" Height="55" Padding="0" Focusable="False"
+                            Command="{Binding PlayPauseCommand}"
+                            ToolTip.Tip="{Binding Loc.TooltipPlayPause}">
+                        <TextBlock Text="⏯" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+
+                    <Button Width="55" Height="55" Padding="0" Focusable="False"
+                            Command="{Binding ForwardCommand}"
+                            ToolTip.Tip="{Binding Loc.TooltipForward}">
+                        <TextBlock Text="⏩" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+
+                    <Button Width="55" Height="55" Padding="0" Focusable="False"
+                            Command="{Binding NextCommand}"
+                            ToolTip.Tip="{Binding Loc.TooltipNext}">
+                        <TextBlock Text="⏭" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                </StackPanel>
+
+                <!-- Громкость и мьют в правом нижнем углу -->
+                <Grid x:Name="VolumeContainer" Width="50" Height="130" 
+                      HorizontalAlignment="Right" VerticalAlignment="Bottom" 
+                      Margin="0,0,15,15" RowDefinitions="*,Auto" Background="Transparent">
+                    
+                    <Slider Grid.Row="0" 
+                            x:Name="VolumeSlider"
+                            Value="{CompiledBinding Volume}" Minimum="0" Maximum="100"
+                            Orientation="Vertical" Height="80" 
+                            HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                            Margin="0,0,0,10"
+                            Focusable="False">
+                        <Slider.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+                            </Transitions>
+                        </Slider.Transitions>
+                    </Slider>
+                    
+                    <Button Grid.Row="1" Width="40" Height="40" Padding="0"
+                            HorizontalAlignment="Center"
+                            Background="Transparent" BorderThickness="0"
+                            Focusable="False"
+                            Command="{Binding ToggleMuteCommand}"
+                            ToolTip.Tip="{Binding Loc.TooltipMute}">
+                        <Panel>
+                            <TextBlock Text="🔊" FontSize="22"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       IsVisible="{Binding !IsMuted}"/>
+                            <TextBlock Text="🔇" FontSize="22"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       IsVisible="{Binding IsMuted}"/>
+                        </Panel>
+                    </Button>
+                </Grid>
+            </Grid>
+
+            <!-- Нижняя часть: таймлайн без собственной заливки -->
+            <Border Grid.Row="2" Background="Transparent" Padding="10,5"
+                    Margin="10,0,10,10" CornerRadius="4">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" Text="{Binding CurrentTimeText}"
+                               Foreground="{DynamicResource FluxSecondaryTextBrush}"
+                               VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                    <Slider Grid.Column="1" x:Name="TimelineSlider"
+                            Minimum="0" Maximum="100"
+                            Value="{Binding Position, Mode=TwoWay}"
+                            VerticalAlignment="Center"
+                            PointerPressed="OnTimelinePointerPressed"
+                            PointerReleased="OnTimelinePointerReleased"
+                            Focusable="False"/>
+
+                    <TextBlock Grid.Column="2" Text="{Binding TotalTimeText}"
+                               Foreground="{DynamicResource FluxSecondaryTextBrush}"
+                               VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Настройки открываются в этом же окне -->
+        <Border IsVisible="{Binding IsSettingsOpen}">
+            <views:SettingsView DataContext="{Binding Settings}"/>
+        </Border>
+    </Grid>
+</Window>

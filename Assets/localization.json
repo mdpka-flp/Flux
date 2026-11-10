@@ -1,0 +1,52 @@
+{
+  "languages": [
+    { "code": "ru", "name": "Русский" },
+    { "code": "en", "name": "English" }
+  ],
+  "strings": {
+    "player.nothing_selected": [ "Ничего не выбрано", "Nothing selected" ],
+    "player.unknown_artist": [ "Неизвестный исполнитель", "Unknown artist" ],
+    "player.unknown_format": [ "Неизвестный формат", "Unknown format" ],
+
+    "tooltip.previous": [ "Предыдущий", "Previous" ],
+    "tooltip.rewind": [ "Назад 5 с", "Back 5 s" ],
+    "tooltip.stop": [ "Стоп", "Stop" ],
+    "tooltip.play_pause": [ "Воспроизведение / пауза", "Play / pause" ],
+    "tooltip.forward": [ "Вперёд 5 с", "Forward 5 s" ],
+    "tooltip.next": [ "Следующий", "Next" ],
+    "tooltip.open_cover": [ "Открыть обложку", "Open cover" ],
+    "tooltip.settings": [ "Настройки", "Settings" ],
+    "tooltip.mute": [ "Выключить / включить звук", "Mute / unmute" ],
+
+    "dialog.open_audio": [ "Выберите аудиофайл", "Choose an audio file" ],
+    "dialog.audio_files": [ "Аудиофайлы", "Audio files" ],
+    "dialog.all_files": [ "Все файлы", "All files" ],
+
+    "settings.title": [ "Настройки", "Settings" ],
+    "settings.back": [ "Назад", "Back" ],
+    "settings.language": [ "Язык интерфейса", "Interface language" ],
+    "settings.language_hint": [ "Список языков берётся из localization.json.", "The language list is read from localization.json." ],
+    "settings.extensions": [ "Аудиоформаты", "Audio formats" ],
+    "settings.extensions_hint": [ "Плеер будет открывать только отмеченные форматы.", "The player will only open the selected formats." ],
+    "settings.apply_associations": [ "Сделать Flux плеером по умолчанию", "Make Flux the default player" ],
+    "settings.associations_ok": [ "Ассоциации обновлены", "Associations updated" ],
+    "settings.associations_failed": [ "Не удалось обновить ассоциации", "Failed to update associations" ],
+    "settings.associations_unsupported": [ "Эта функция недоступна в вашей системе", "This feature is not available on your system" ],
+    "settings.at_least_one": [ "Нужно оставить хотя бы один формат", "At least one format must remain selected" ],
+    "settings.appearance": [ "Внешний вид", "Appearance" ],
+    "settings.mica": [ "Прозрачность окна", "Window transparency" ],
+    "settings.transparency": [ "Прозрачность фона", "Background transparency" ],
+    "settings.transparency_hint": [ "В Windows используется Mica, в Linux — прозрачность композитора.", "Uses Mica on Windows and compositor transparency on Linux." ],
+    "settings.main_color": [ "Основной цвет", "Main color" ],
+    "settings.accent_color": [ "Акцентный цвет", "Accent color" ],
+    "settings.text_color": [ "Цвет текста", "Text color" ],
+    "settings.color_editor": [ "Выбор цвета", "Color picker" ],
+    "settings.color_hex": [ "HEX", "HEX" ],
+    "settings.red": [ "R", "R" ],
+    "settings.green": [ "G", "G" ],
+    "settings.blue": [ "B", "B" ],
+    "settings.apply": [ "Применить", "Apply" ],
+    "settings.cancel": [ "Отмена", "Cancel" ],
+    "settings.saved": [ "Сохранено", "Saved" ]
+  }
+}

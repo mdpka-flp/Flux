@@ -1,2 +1,33 @@
 # Flux
-Flux is an open-source audio player with a wide range of useful additional features
+
+Кроссплатформенный аудиоплеер на Avalonia (.NET 10) для Linux (Wayland и X11) и Windows.
+
+## Возможности
+
+- Плеер в одном окне: обложка, метаданные трека, перемотка, громкость.
+- Плейлист собирается из папки открытого файла, «Следующий»/«Предыдущий» идут по кругу.
+- Воспроизведение через LibVLC, метаданные и обложки через TagLib#.
+- Настройки: язык интерфейса, аудиоформаты, прозрачность окна и цветовая схема.
+- Регистрация ассоциаций файлов и поддержка «Открыть с помощью».
+- Один экземпляр: открытие нового файла передаётся в уже запущенное окно.
+- MPRIS (статус и метаданные) в Linux.
+
+## Зависимости
+
+- Linux: библиотеки libvlc (`sudo pacman -S vlc`), они не упаковываются в бинарник.
+- Windows: установленный VLC (libvlc, 64-бит) и Microsoft Visual C++ Redistributable (x64).
+
+## Сборка
+
+```bash
+dotnet build
+dotnet run
+dotnet publish -c Release -r linux-x64 -o publish/linux
+dotnet publish -c Release -r win-x64 -o publish/windows
+```
+
+На обеих платформах получается один самодостаточный файл.
+
+## Лицензия
+
+MIT, см. [LICENSE](LICENSE).

@@ -1,0 +1,176 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Flux.ViewModels"
+             xmlns:services="using:Flux.Services"
+             x:Class="Flux.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel"
+             x:CompileBindings="True">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="PaletteItemTemplate" x:DataType="vm:PaletteColor">
+            <Button Width="28" Height="28" Padding="0" Margin="0,0,8,8"
+                    CornerRadius="14" BorderThickness="2"
+                    Background="{Binding Swatch}"
+                    BorderBrush="{Binding BorderBrush}"
+                    Command="{Binding SelectCommand}"
+                    CommandParameter="{Binding}"/>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      BringIntoViewOnFocusChange="False">
+            <StackPanel Margin="20" Spacing="14">
+
+                <Grid ColumnDefinitions="Auto,*">
+                    <Button Width="34" Height="34" Padding="0"
+                            Background="Transparent" BorderThickness="0"
+                            Focusable="False"
+                            Command="{Binding CloseCommand}"
+                            ToolTip.Tip="{Binding Loc.SettingsBack}">
+                        <TextBlock Text="←" FontSize="18"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                    <TextBlock Grid.Column="1" Text="{Binding Loc.SettingsTitle}"
+                               FontSize="22" FontWeight="SemiBold"
+                               VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </Grid>
+
+                <Border Height="1" Background="{DynamicResource FluxDividerBrush}"/>
+
+                <!-- Язык -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{Binding Loc.SettingsLanguage}" FontSize="15" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding Loc.SettingsLanguageHint}" FontSize="11"
+                               Foreground="{DynamicResource FluxSecondaryTextBrush}" TextWrapping="Wrap"/>
+                    <ComboBox ItemsSource="{Binding Languages}"
+                              SelectedItem="{Binding SelectedLanguage}"
+                              Width="220" HorizontalAlignment="Left" Margin="0,4,0,0">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="services:LanguageOption">
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Аудиоформаты -->
+                <StackPanel Spacing="6">
+                    <TextBlock Text="{Binding Loc.SettingsExtensions}" FontSize="15" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding Loc.SettingsExtensionsHint}" FontSize="11"
+                               Foreground="{DynamicResource FluxSecondaryTextBrush}" TextWrapping="Wrap"/>
+                    <ItemsControl ItemsSource="{Binding Extensions}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ExtensionOption">
+                                <CheckBox Content="{Binding DisplayName}"
+                                          IsChecked="{Binding IsEnabled}"
+                                          Margin="0,0,14,2"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Content="{Binding Loc.SettingsApplyAssociations}"
+                            Command="{Binding ApplyAssociationsCommand}"
+                            HorizontalAlignment="Left" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <Border Height="1" Background="{DynamicResource FluxDividerBrush}"/>
+
+                <!-- Внешний вид -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{Binding Loc.SettingsAppearance}" FontSize="15" FontWeight="SemiBold"/>
+
+                    <CheckBox Content="{Binding Loc.SettingsMica}" IsChecked="{Binding MicaEnabled}"/>
+
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="{Binding Loc.SettingsTransparency}" FontSize="13"/>
+                        <TextBlock Text="{Binding Loc.SettingsTransparencyHint}" FontSize="11"
+                                   Foreground="{DynamicResource FluxSecondaryTextBrush}"/>
+                        <Slider Minimum="0" Maximum="100" Width="280" HorizontalAlignment="Left"
+                                IsEnabled="{Binding MicaEnabled}"
+                                Value="{Binding BackgroundTransparency}"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{Binding Loc.SettingsMainColor}" FontSize="13"/>
+                        <ItemsControl ItemsSource="{Binding MainPalette}"
+                                      ItemTemplate="{StaticResource PaletteItemTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{Binding Loc.SettingsAccentColor}" FontSize="13"/>
+                        <ItemsControl ItemsSource="{Binding AccentPalette}"
+                                      ItemTemplate="{StaticResource PaletteItemTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{Binding Loc.SettingsTextColor}" FontSize="13"/>
+                        <ItemsControl ItemsSource="{Binding TextPalette}"
+                                      ItemTemplate="{StaticResource PaletteItemTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </StackPanel>
+                </StackPanel>
+
+                                <TextBlock Text="{Binding StatusText}" FontSize="12"
+                           Foreground="{DynamicResource FluxAccentBrush}"
+                           TextWrapping="Wrap" MinHeight="16"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Редактор произвольного цвета (оверлей) -->
+        <Border IsVisible="{Binding IsColorEditorOpen}" Background="#99000000">
+            <Border Width="360" Padding="18" CornerRadius="10"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="{DynamicResource FluxPanelBrush}"
+                    BorderBrush="{DynamicResource FluxDividerBrush}"
+                    BorderThickness="1">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{Binding EditorTitle}" FontSize="16" FontWeight="SemiBold"/>
+
+                    <!-- Двумерная палитра -->
+                    <ColorSpectrum Height="200"
+                                   Color="{Binding EditorColor, Mode=TwoWay}"
+                                   HorizontalAlignment="Stretch"/>
+
+                    <!-- Предпросмотр и Hex -->
+                    <Grid ColumnDefinitions="Auto,*" Margin="0,4,0,0">
+                        <Border Width="40" Height="40" CornerRadius="6"
+                                Background="{Binding EditorPreviewBrush}"
+                                BorderBrush="{DynamicResource FluxDividerBrush}"
+                                BorderThickness="1"/>
+                        <TextBox Grid.Column="1" Text="{Binding EditorHex, Mode=TwoWay}"
+                                 Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                        <Button Content="{Binding Loc.SettingsCancel}"
+                                Command="{Binding CancelColorEditorCommand}"/>
+                        <Button Content="{Binding Loc.SettingsApply}"
+                                Command="{Binding ApplyColorEditorCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</UserControl>

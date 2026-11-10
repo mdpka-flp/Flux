@@ -1,0 +1,26 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Flux.App"
+             xmlns:local="using:Flux"
+             RequestedThemeVariant="Default">
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <SolidColorBrush x:Key="FluxTextBrush" Color="#FFFFFFFF" />
+        <SolidColorBrush x:Key="FluxSecondaryTextBrush" Color="#AAFFFFFF" />
+        <SolidColorBrush x:Key="FluxDividerBrush" Color="#33FFFFFF" />
+        <SolidColorBrush x:Key="FluxAccentBrush" Color="#FF0078D7" />
+        <SolidColorBrush x:Key="FluxPanelBrush" Color="#FF1A1A1A" />
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <Style Selector="Window TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource FluxTextBrush}" />
+        </Style>
+        <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+    </Application.Styles>
+</Application>
