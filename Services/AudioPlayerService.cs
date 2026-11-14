@@ -162,9 +162,7 @@ public class AudioPlayerService : IAudioPlayerService
                 _ => ".img"
             };
 
-            var cacheDir = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Flux", "covers");
+            var cacheDir = AppPaths.CoversDirectory;
             Directory.CreateDirectory(cacheDir);
 
             var hashBytes = SHA1.HashData(Encoding.UTF8.GetBytes(_currentFilePath));

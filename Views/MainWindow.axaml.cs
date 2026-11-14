@@ -48,14 +48,13 @@ public partial class MainWindow : Window
         Opened += (_, _) =>
         {
             ApplyAppearance();
-            System.IO.File.AppendAllText("/tmp/opencode/layout.log", $"{DateTime.Now:HH:mm:ss.fff} opened\n");
             RefreshLayoutSoon();
         };
 
         // Hyprland иногда показывает устаревший буфер после переноса окна на
         // другое рабочее пространство. Принудительный проход компоновки с
         // задержкой (пока идёт анимация) заставляет поверхность перерисоваться.
-        Activated += (_, _) => { System.IO.File.AppendAllText("/tmp/opencode/layout.log", $"{DateTime.Now:HH:mm:ss.fff} activated\n"); RefreshLayoutSoon(); };
+        Activated += (_, _) => RefreshLayoutSoon();
     }
 
     // Задержка даёт композитору время применить анимацию воркспейса.
@@ -93,7 +92,6 @@ public partial class MainWindow : Window
     // с потомками. Width/Height не меняются, поэтому тайлинг Hyprland цел.
     private void RefreshLayout()
     {
-        System.IO.File.AppendAllText("/tmp/opencode/layout.log", $"{DateTime.Now:HH:mm:ss.fff} refresh\n");
         InvalidateMeasure();
         InvalidateArrange();
         InvalidateVisual();
@@ -245,7 +243,6 @@ public partial class MainWindow : Window
 
     private void ApplyBackground(AppSettings settings, Color color)
     {
-        System.IO.File.AppendAllText("/tmp/opencode/bg.log", $"hint={TransparencyLevelHint.Count}:{string.Join(",", TransparencyLevelHint)} actual={ActualTransparencyLevel} mica={settings.MicaEnabled} sizes={string.Join(";", SizeToContent.ToString())}\n");
         if (!settings.MicaEnabled)
         {
             Background = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
@@ -262,7 +259,6 @@ public partial class MainWindow : Window
             : (byte)255;
 
         Background = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
-        System.IO.File.AppendAllText("/tmp/opencode/bg.log", $"  -> alpha={alpha}\n");
     }
 
     private static void ApplyPalette(AppSettings settings)

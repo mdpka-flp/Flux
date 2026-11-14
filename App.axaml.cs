@@ -25,8 +25,12 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            SettingsService.Load();
-            LocalizationService.Instance.Load(SettingsService.Current.Language);
+            // Ни сбой настройки вида, ни ошибка при загрузке файла не должны
+            // завершать приложение — пользователь должен увидеть окно.
+            Dispatcher.UIThread.UnhandledException += (_, e) => e.Handled = true;
+
+            TryRun(() => SettingsService.Load());
+            TryRun(() => LocalizationService.Instance.Load(SettingsService.Current.Language));
 
             var vm = new MainViewModel();
             var window = new MainWindow { DataContext = vm, Icon = LoadWindowIcon() };
@@ -59,6 +63,18 @@ public partial class App : Application
         }   
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static void TryRun(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch
+        {
+            // Настройки и тексты не критичны для запуска.
+        }
     }
 
     private static WindowIcon? LoadWindowIcon()
